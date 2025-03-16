@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload with JSON</title>
+</head>
+<body>
+    <h1>Upload Audio/Video with Subtitle Format</h1>
+    <form id="uploadForm">
+        <input type="file" id="mediaFile" name="mediaFile" accept="audio/*,video/*" required>
+        <label for="subtitleFormat">Subtitle Format:</label>
+        <select id="subtitleFormat" name="subtitleFormat" required>
+            <option value="srt">SRT</option>
+            <option value="vtt">VTT</option>
+            <option value="ass">ASS</option>
+        </select>
+        <button type="submit">Upload</button>
+    </form>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = new FormData();
+            const fileInput = document.getElementById('mediaFile');
+            const subtitleFormat = document.getElementById('subtitleFormat').value;
+
+            if (fileInput.files.length === 0) {
+                alert('Please select a file to upload.');
+                return;
+            }
+
+            formData.append('mediaFile', fileInput.files[0]);
+            formData.append('subtitleFormat', subtitleFormat);
+
+            fetch('/endpoint', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => console.log('Success:', data))
+            .catch((error) => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
